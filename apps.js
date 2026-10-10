@@ -19,6 +19,6 @@ document.addEventListener("click", (event) => {
   if (!link) return;
   const destination = new URL(link.href, window.location.href);
   if (destination.origin === window.location.origin) return;
+  window.open(destination.href, "_blank", "noopener,noreferrer");
   event.preventDefault();
-  window.location.assign(`/open?url=${encodeURIComponent(destination.href)}`);
 });
