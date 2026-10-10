@@ -25,14 +25,22 @@ const STATIC_FILES = {
   "/open": ["viewer.html", "text/html; charset=utf-8"],
   "/apps": ["apps.html", "text/html; charset=utf-8"],
   "/videos": ["videos.html", "text/html; charset=utf-8"],
+  "/download": ["download.html", "text/html; charset=utf-8"],
   "/account": ["account.html", "text/html; charset=utf-8"],
+  "/offline.html": ["offline.html", "text/html; charset=utf-8"],
+  "/manifest.webmanifest": ["manifest.webmanifest", "application/manifest+json; charset=utf-8"],
+  "/service-worker.js": ["service-worker.js", "text/javascript; charset=utf-8"],
+  "/pwa.js": ["pwa.js", "text/javascript; charset=utf-8"],
   "/logo.svg": ["logo.svg", "image/svg+xml; charset=utf-8"],
+  "/icons/icon-192.png": ["icons/icon-192.png", "image/png"],
+  "/icons/icon-512.png": ["icons/icon-512.png", "image/png"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
   "/app.js": ["app.js", "text/javascript; charset=utf-8"],
   "/search.js": ["search.js", "text/javascript; charset=utf-8"],
   "/viewer.js": ["viewer.js", "text/javascript; charset=utf-8"],
   "/apps.js": ["apps.js", "text/javascript; charset=utf-8"],
   "/videos.js": ["videos.js", "text/javascript; charset=utf-8"],
+  "/download.js": ["download.js", "text/javascript; charset=utf-8"],
   "/account.js": ["account.js", "text/javascript; charset=utf-8"],
   "/login.js": ["private-admin/login.js", "text/javascript; charset=utf-8"],
   "/admin.js": ["private-admin/admin.js", "text/javascript; charset=utf-8"]
@@ -308,6 +316,8 @@ export function createApp({
   dataDir = path.join(ROOT, "data"),
   serperApiKey,
   fetchImpl = fetch,
+  androidAppId,
+  androidSha256Fingerprints = [],
   secureCookies = false,
   trustProxy = false
 } = {}) {
@@ -413,6 +423,28 @@ export function createApp({
     const url = new URL(request.url, `http://${host}`);
     const authenticated = getSession(request);
     const accountSession = getAccount(request);
+    if (url.pathname === "/.well-known/assetlinks.json" && request.method === "GET") {
+      const fingerprints = Array.isArray(androidSha256Fingerprints)
+        ? androidSha256Fingerprints.map((value) => typeof value === "string" ? value.trim().toUpperCase() : "")
+        : [];
+      const validPackageId = typeof androidAppId === "string"
+        && /^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$/.test(androidAppId);
+      const validFingerprints = fingerprints.length > 0
+        && fingerprints.every((value) => /^(?:[0-9A-F]{2}:){31}[0-9A-F]{2}$/.test(value));
+      if (!validPackageId || !validFingerprints) {
+        sendJson(response, 404, { error: "Android app association is not configured." });
+        return;
+      }
+      sendJson(response, 200, [{
+        relation: ["delegate_permission/common.handle_all_urls"],
+        target: {
+          namespace: "android_app",
+          package_name: androidAppId,
+          sha256_cert_fingerprints: fingerprints
+        }
+      }], { "Cache-Control": "public, max-age=300" });
+      return;
+    }
     if (url.pathname === "/admin" || url.pathname === "/admin/") {
       const filename = authenticated ? "admin.html" : "login.html";
       send(response, 200, await requireFile(path.join("private-admin", filename)), "text/html; charset=utf-8", {
@@ -437,8 +469,8 @@ export function createApp({
         sendJson(response, 400, { error: "Enter a search of 1 to 200 characters." });
         return;
       }
-      if (!["all", "websites", "videos"].includes(searchType)) {
-        sendJson(response, 400, { error: "Choose All, Websites, or Videos." });
+      if (!["all", "websites", "news", "videos"].includes(searchType)) {
+        sendJson(response, 400, { error: "Choose All, Websites, News, or Videos." });
         return;
       }
       if (!Number.isSafeInteger(page) || page < 1 || page > 100) {
@@ -876,9 +908,13 @@ export function createApp({
 
     if (STATIC_FILES[url.pathname] && (request.method === "GET" || request.method === "HEAD")) {
       const [filename, contentType] = STATIC_FILES[url.pathname];
-      const body = await requireFile(filename);
+      const body = contentType === "image/png"
+        ? await readFile(path.join(ROOT, filename))
+        : await requireFile(filename);
       send(response, 200, request.method === "HEAD" ? "" : body, contentType,
-        url.pathname === "/admin.js" ? { "Cache-Control": "no-store" } : {});
+        url.pathname === "/service-worker.js"
+          ? { "Cache-Control": "no-cache", "Service-Worker-Allowed": "/" }
+          : url.pathname === "/admin.js" ? { "Cache-Control": "no-store" } : {});
       return;
     }
     if (url.pathname.startsWith("/api/")) {
@@ -920,6 +956,9 @@ async function start() {
     adminPassword: process.env.ADMIN_PASSWORD,
     dataDir: process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.join(ROOT, "data"),
     serperApiKey: process.env.SERPER_API_KEY,
+    androidAppId: process.env.ANDROID_APP_ID,
+    androidSha256Fingerprints: (process.env.ANDROID_SHA256_CERT_FINGERPRINTS ?? "")
+      .split(",").map((value) => value.trim()).filter(Boolean),
     secureCookies,
     trustProxy
   });
