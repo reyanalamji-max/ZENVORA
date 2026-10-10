@@ -3,10 +3,16 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#2359d1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ZENVORA">
     <title>Zenvora Search</title>
+    <link rel="manifest" href="/manifest.webmanifest">
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <link rel="stylesheet" href="/styles.css">
+    <script src="/pwa.js" defer></script>
     <script src="/app.js" defer></script>
   </head>
   <body>
@@ -21,11 +27,13 @@
           <a class="page-nav-link active" href="/" aria-current="page">Search</a>
           <a class="page-nav-link" href="/apps">Apps</a>
           <a class="page-nav-link" href="/videos">Videos</a>
+          <a class="page-nav-link" href="/download">Download</a>
           <a class="page-nav-link" id="account-link" href="/account">Sign in</a>
         </nav>
         <nav class="search-tabs" aria-label="Search category">
           <button class="tab active" type="submit" form="search-form" name="type" value="all" aria-pressed="true">All</button>
           <button class="tab" type="submit" form="search-form" name="type" value="websites">Websites</button>
+          <button class="tab" type="submit" form="search-form" name="type" value="news">News</button>
           <button class="tab" type="submit" form="search-form" name="type" value="videos">Videos</button>
         </nav>
         <div class="search-box-wrap">
