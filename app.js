@@ -14,7 +14,7 @@ function closeSuggestions() {
 }
 
 function openSuggestion(item) {
-  window.location.assign(item.url);
+  window.open(item.url, "_blank", "noopener,noreferrer");
 }
 
 function updateActiveSuggestion(index) {
@@ -145,7 +145,7 @@ form.addEventListener("submit", (event) => {
         return;
       }
       if (!response.ok) throw new Error(result.error ?? "Could not save this website.");
-      window.location.assign(`/open?url=${encodeURIComponent(result.website.url)}`);
+      window.open(result.website.url, "_blank", "noopener,noreferrer");
     })
     .catch((error) => {
       searchFeedback.textContent = error.message;
@@ -195,7 +195,9 @@ Promise.all([fetch("/api/settings"), fetch("/api/account/me")])
     websiteShortcuts.replaceChildren(...settings.shortcuts.map((shortcut) => {
       const link = document.createElement("a");
       link.className = "website-shortcut";
-      link.href = `/open?url=${encodeURIComponent(shortcut.url)}`;
+      link.href = shortcut.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
       link.textContent = shortcut.name;
       return link;
     }));
