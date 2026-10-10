@@ -909,9 +909,10 @@ async function start() {
   if (!Number.isInteger(port) || port < 1 || port > 65535) {
     throw new Error("PORT must be an integer between 1 and 65535.");
   }
-  const listenHost = process.env.HOST ?? "127.0.0.1";
-  const secureCookies = process.env.SECURE_COOKIES === "true";
-  const trustProxy = process.env.TRUST_PROXY === "true";
+  const isRender = process.env.RENDER === "true";
+  const listenHost = process.env.HOST ?? (isRender ? "0.0.0.0" : "127.0.0.1");
+  const secureCookies = process.env.SECURE_COOKIES === "true" || isRender;
+  const trustProxy = process.env.TRUST_PROXY === "true" || isRender;
   if (!["127.0.0.1", "localhost", "::1"].includes(listenHost) && !secureCookies) {
     throw new Error("Set SECURE_COOKIES=true before listening beyond localhost.");
   }
@@ -925,7 +926,7 @@ async function start() {
   server.listen(port, listenHost, () => {
     console.log(`Zenvora is listening on ${listenHost}:${port}.`);
     if (!["127.0.0.1", "localhost", "::1"].includes(listenHost)) {
-      console.log("Use HTTPS through a trusted reverse proxy and set SECURE_COOKIES=true for public access.");
+      console.log("Use HTTPS through a trusted reverse proxy for public access.");
     }
   });
 }
