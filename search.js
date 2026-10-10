@@ -26,7 +26,8 @@ function createResult(result) {
 
   const link = document.createElement("a");
   link.className = "result-title";
-  link.href = `/open?url=${encodeURIComponent(result.url)}`;
+  link.href = result.url;
+  link.target = "_blank";
   link.rel = "noopener noreferrer";
 
   const destinationUrl = new URL(result.url);
