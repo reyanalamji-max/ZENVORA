@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Owner settings · Zenvora</title>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/admin.js" defer></script>
+  </head>
+  <body class="account-page">
+    <main class="account-card admin-card">
+      <header class="admin-heading">
+        <div>
+          <a class="mini-brand brand-lockup" href="/" aria-label="Zenvora home">
+            <img class="brand-mark" src="/logo.svg" alt="">
+            <span>Zenvora</span>
+          </a>
+          <h1>Your search page</h1>
+          <p class="muted">Only you can change these personal settings.</p>
+        </div>
+        <button class="text-button" id="logout" type="button">Sign out</button>
+      </header>
+      <form id="settings-form">
+        <label for="site-name">Page name</label>
+        <input id="site-name" name="siteName" type="text" maxlength="32" required>
+        <label for="tagline">Tagline</label>
+        <input id="tagline" name="tagline" type="text" maxlength="100">
+        <label for="accent-color">Accent color</label>
+        <input class="color-input" id="accent-color" name="accentColor" type="color" required>
+        <section class="shortcut-editor" aria-labelledby="shortcuts-heading">
+          <div class="shortcut-editor-heading">
+            <div>
+              <h2 id="shortcuts-heading">Your websites</h2>
+              <p class="muted">Add as many website names and links as you need. Search by name or enter a link on the homepage.</p>
+            </div>
+            <button class="text-button" id="add-shortcut" type="button">+ Add website</button>
+          </div>
+          <div class="shortcut-list" id="shortcut-list"></div>
+        </section>
+        <section class="shortcut-editor" aria-labelledby="videos-heading">
+          <div class="shortcut-editor-heading">
+            <div>
+              <h2 id="videos-heading">Your video library</h2>
+              <p class="muted">Add video titles and links. They open on their original websites.</p>
+            </div>
+            <button class="text-button" id="add-video" type="button">+ Add video</button>
+          </div>
+          <div class="shortcut-list" id="video-list"></div>
+        </section>
+        <section class="shortcut-editor user-data-panel" aria-labelledby="users-heading">
+          <div class="shortcut-editor-heading">
+            <div>
+              <h2 id="users-heading">User accounts and private websites</h2>
+              <p class="muted">Admin-only view. Users can view and change only their own account. Passwords are stored as one-way hashes; search history is not saved.</p>
+            </div>
+          </div>
+          <div id="user-list" class="user-list" aria-live="polite"></div>
+          <p class="form-message" id="users-message" role="status" aria-live="polite"></p>
+        </section>
+        <button class="primary-button" type="submit">Save changes</button>
+        <p class="form-message" id="message" role="status" aria-live="polite"></p>
+      </form>
+      <a class="back-link" href="/">Preview your search page</a>
+    </main>
+  </body>
+</html>

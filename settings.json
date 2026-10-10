@@ -1,0 +1,20 @@
+{
+  "siteName": "Zenvora",
+  "tagline": "Search the web with ease",
+  "accentColor": "#03378c",
+  "shortcuts": [
+    {
+      "name": "Dex Scanner",
+      "url": "https://dexscreener.com/"
+    },
+    {
+      "name": "Coinmarket",
+      "url": "https://coinmarketcap.com/"
+    },
+    {
+      "name": "youtube",
+      "url": "https://www.youtube.com/"
+    }
+  ],
+  "videos": []
+}

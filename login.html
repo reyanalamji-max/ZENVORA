@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Owner sign in · Zenvora</title>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/login.js" defer></script>
+  </head>
+  <body class="account-page">
+    <main class="account-card">
+      <a class="mini-brand brand-lockup" href="/" aria-label="Zenvora home">
+        <img class="brand-mark" src="/logo.svg" alt="">
+        <span>Zenvora</span>
+      </a>
+      <h1>Owner sign in</h1>
+      <p class="muted">Sign in to manage your personal search page.</p>
+      <form id="login-form">
+        <label for="password">Admin password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button class="primary-button" type="submit">Sign in</button>
+        <p class="form-message" id="message" role="status" aria-live="polite"></p>
+      </form>
+      <a class="back-link" href="/">Back to search</a>
+    </main>
+  </body>
+</html>
