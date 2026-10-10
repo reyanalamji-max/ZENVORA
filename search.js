@@ -5,6 +5,7 @@ const page = Number(params.get("page") ?? "1");
 const tabs = [
   { value: "all", label: "All" },
   { value: "websites", label: "Websites" },
+  { value: "news", label: "News" },
   { value: "videos", label: "Videos" }
 ];
 if (!tabs.some((tab) => tab.value === selectedType)) selectedType = "all";
